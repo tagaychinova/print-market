@@ -1,0 +1,47 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: printmarket-postgres
+    environment:
+      POSTGRES_USER: printmarket
+      POSTGRES_PASSWORD: secretpassword
+      POSTGRES_DB: printmarket_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - pg_data:/var/lib/postgresql/data
+
+  mongodb:
+    image: mongo:7
+    container_name: printmarket-mongo
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: printmarket
+      MONGO_INITDB_ROOT_PASSWORD: secretpassword
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo_data:/data/db
+
+  redis:
+    image: redis:7-alpine
+    container_name: printmarket-redis
+    ports:
+      - "6379:6379"
+
+  minio:
+    image: minio/minio:latest
+    container_name: printmarket-minio
+    command: server /data --console-address ":9001"
+    environment:
+      MINIO_ROOT_USER: printmarket
+      MINIO_ROOT_PASSWORD: secretpassword
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    volumes:
+      - minio_data:/data
+
+volumes:
+  pg_data:
+  mongo_data:
+  minio_data:
